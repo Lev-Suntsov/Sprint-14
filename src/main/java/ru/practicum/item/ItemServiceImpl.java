@@ -2,6 +2,7 @@ package ru.practicum.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.user.FakeUserRepository;
 
 import java.util.List;
 
@@ -9,18 +10,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepositoryImpl repository;
-    private final ItemMapper mapper;
+    private final FakeUserRepository userRepository;
 
     @Override
-    public List<Item> getItems(long userId) {
+    public List<ItemDto> getItems(long userId) {
         return repository.findByUserId(userId);
     }
 
     @Override
-    public Item addNewItem(long userId, ItemDto itemDto) {
-        Item item = mapper.mapToItem(itemDto);
-        item.setUserId(userId);
-        return repository.save(item);
+    public ItemDto addNewItem(long userId, ItemDto itemDto) {
+        userRepository.findUserById(userId);
+        itemDto.setUserId(userId);
+        return repository.save(itemDto);
     }
 
     @Override
@@ -29,17 +30,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item updateItem(long itemId, ItemDto item) {
-        return repository.updateItem(itemId, mapper.mapToItem(item));
+    public ItemDto updateItem(Long userId, long itemId, ItemDto item) {
+        return repository.updateItem(userId, itemId, item);
     }
 
     @Override
-    public Item getItem(long itemId){
+    public ItemDto getItem(long itemId) {
         return repository.getItem(itemId);
     }
 
     @Override
-    public List<Item> search(String text){
+    public List<ItemDto> search(String text) {
         return repository.search(text);
     }
 

@@ -1,7 +1,7 @@
 package ru.practicum.item;
 
 public class ItemMapper {
-    public ItemDto mapToItemDto(Item item){
+    public ItemDto mapToItemDto(Item item) {
         ItemDto dto = new ItemDto();
         dto.setId(item.getId());
         dto.setUserId(item.getUserId());
@@ -10,7 +10,8 @@ public class ItemMapper {
         dto.setAvailable(item.isAvailable());
         return dto;
     }
-    public Item mapToItem(ItemDto dto){
+
+    public Item mapToItem(ItemDto dto) {
         Item item = new Item();
         item.setId(dto.getId());
         item.setAvailable(dto.getAvailable());

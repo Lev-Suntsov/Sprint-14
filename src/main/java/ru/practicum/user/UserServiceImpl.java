@@ -11,12 +11,28 @@ class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return repository.findAll();
     }
 
     @Override
-    public User saveUser(User user) {
+    public UserDto saveUser(UserDto user) {
         return repository.save(user);
     }
+
+    @Override
+    public UserDto updateUser(Long userId, UserDto user) {
+        return repository.updateUser(userId, user);
+    }
+
+    @Override
+    public UserDto findUserById(Long userId) {
+        return repository.findUserById(userId);
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        repository.deleteUser(userId);
+    }
+
 }

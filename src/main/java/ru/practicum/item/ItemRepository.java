@@ -4,15 +4,15 @@ import java.util.List;
 
 public interface ItemRepository {
 
-    List<Item> findByUserId(long userId);
+    List<ItemDto> findByUserId(long userId);
 
-    Item save(Item item);
+    ItemDto save(ItemDto item);
 
     void deleteByUserIdAndItemId(long userId, long itemId);
 
-    Item updateItem(long itemId, Item item);
+    ItemDto updateItem(Long userId, long itemId, ItemDto item);
 
-    Item getItem(long itemId);
+    ItemDto getItem(long itemId);
 
-    List<Item> search(String text);
+    List<ItemDto> search(String text);
 }

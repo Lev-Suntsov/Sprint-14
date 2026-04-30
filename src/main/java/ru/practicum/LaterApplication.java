@@ -21,7 +21,6 @@ public class LaterApplication {
         applicationContext.setServletContext(tomcatContext.getServletContext());
         applicationContext.refresh();
 
-        // добавляем диспетчер запросов
         DispatcherServlet dispatcherServlet = new DispatcherServlet(applicationContext);
         Wrapper dispatcherWrapper =
                 Tomcat.addServlet(tomcatContext, "dispatcher", dispatcherServlet);

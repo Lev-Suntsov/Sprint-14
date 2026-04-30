@@ -1,38 +1,80 @@
 package ru.practicum.user;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.Exeption.DublicateException;
+import ru.practicum.Exeption.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
 public class FakeUserRepository implements UserRepository {
-    private static final List<User> FAKE_USERS = createManyFakeUsers(3);
+    private static final HashMap<Long, UserDto> users = new HashMap<>();
+    private long nextId = 1L;
 
     @Override
-    public List<User> findAll() {
-        return FAKE_USERS;
+    public List<UserDto> findAll() {
+        return users.values().stream().toList();
     }
 
     @Override
-    public User save(User user) {
-        throw new UnsupportedOperationException("Метод save() ещё не готов");
-    }
+    public UserDto save(UserDto user) {
+        validateUser(user);
 
-    private static List<User> createManyFakeUsers(int count) {
-        List<User> fakeUsers = new ArrayList<>();
-        for (long id = 1; id <= count; id++) {
-            fakeUsers.add(createFakeUser(id));
+        if (user.getId() == null) {
+            user.setId(nextId++);
         }
-        return Collections.unmodifiableList(fakeUsers);
+
+        users.put(user.getId(), user);
+        return user;
     }
 
-    private static User createFakeUser(long id) {
-        User fakeUser = new User();
-        fakeUser.setId(id);
-        fakeUser.setEmail("mail" + id + "@example.com");
-        fakeUser.setName("Akakiy Akakievich #" + id);
-        return fakeUser;
+    @Override
+    public UserDto updateUser(Long userId, UserDto user) {
+        UserDto oldUser;
+        if (users.containsKey(userId)) {
+             oldUser = users.get(userId);
+
+             if (user.getName() != null && !user.getName().isBlank()) {
+                 oldUser.setName(user.getName());
+             }
+
+             if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                 validateUser(user);
+                 oldUser.setEmail(user.getEmail());
+             }
+        } else {
+            throw new  NotFoundException("Данный пользователь не найден");
+        }
+        return oldUser;
     }
+
+
+    private void validateUser(UserDto user) {
+        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            throw new IllegalArgumentException("Некорректный email");
+        }
+        if (user.getEmail() != null && !user.getEmail().isEmpty() && !user.getEmail().isBlank()) {
+            for (UserDto u : users.values()) {
+                if (u.getEmail().contains(user.getEmail())) {
+                    throw new DublicateException("Данный email уже используется");
+                }
+            }
+        }
+    }
+
+    @Override
+    public UserDto findUserById(Long userId) {
+        if (users.containsKey(userId)) {
+            return users.get(userId);
+        } else {
+            throw new  NotFoundException("Данный пользователь не найден");
+        }
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        users.remove(userId);
+    }
+
 }
