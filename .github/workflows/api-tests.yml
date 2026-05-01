@@ -1,8 +1,33 @@
-name: Films API Tests
+name: ShareIt API Tests
 
 on:
   pull_request:
 
 jobs:
-  build:
-    uses: yandex-praktikum/java-filmorate/.github/workflows/api-tests.yml@ci
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build app
+        run: mvn -B clean package -DskipTests
+
+      - name: Run app
+        run: java -jar target/*.jar &
+
+      - name: Wait for app
+        run: sleep 25
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman collection
+        run: newman run .github/workflows/sprint.json
