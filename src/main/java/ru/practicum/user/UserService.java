@@ -1,0 +1,15 @@
+package ru.practicum.user;
+
+import java.util.List;
+
+interface UserService {
+    List<UserDto> getAllUsers();
+
+    UserDto saveUser(UserDto user);
+
+    UserDto updateUser(Long userId, UserDto user);
+
+    UserDto findUserById(Long userId);
+
+    void deleteUser(Long userId);
+}
